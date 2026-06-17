@@ -1,0 +1,18 @@
+{
+  "commit": "85944d0a",
+  "timestamp": "2026-06-17T15:42:51Z",
+  "branch": "feature/python-docstrings",
+  "pr": 114,
+  "modules": {
+    "backend": {"status": "fail", "reason": "missing rust toolchain"},
+    "frontend": {"status": "pass"},
+    "market": {"status": "fail", "reason": "missing go toolchain"},
+    "frailbox": {"status": "fail", "reason": "missing gcc"},
+    "engine": {"status": "pass"},
+    "ai_reviewer": {"status": "pass"},
+    "todo_audit": {"status": "pass"},
+    "legacy_caps": {"status": "pass"},
+    "error_boundaries": {"status": "pass"},
+    "python_docstrings": {"status": "pass"}
+  }
+}
