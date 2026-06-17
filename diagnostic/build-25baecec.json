@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-06-17T23:59:10Z",
+  "commit": "25baecec",
+  "diagnostic_logd": "diagnostic/build-25baecec.logd",
+  "diagnostic_logd_error": null,
+  "chunked": false,
+  "chunk_size_bytes": null,
+  "password": "stub-password-for-ci-validation",
+  "decrypt_command": null,
+  "total_modules": 10,
+  "passed": 8,
+  "failed": 2,
+  "modules": [
+    {
+      "name": "backend",
+      "status": "PASS",
+      "elapsed_seconds": 5,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "frontend",
+      "status": "PASS",
+      "elapsed_seconds": 6,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "market",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "go1.26 unavailable"
+    },
+    {
+      "name": "frailbox",
+      "status": "PASS",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "engine",
+      "status": "PASS",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "compliance",
+      "status": "PASS",
+      "elapsed_seconds": 1,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "v2-market-stream",
+      "status": "PASS",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "nfc-scanner",
+      "status": "PASS",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": ""
+    },
+    {
+      "name": "openapi-haskell",
+      "status": "FAIL",
+      "elapsed_seconds": 5,
+      "artifact": null,
+      "output": "liftA2 error"
+    },
+    {
+      "name": "openapi-tools",
+      "status": "PASS",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": ""
+    }
+  ],
+  "pr_note": "Include this JSON diagnostic report and diagnostic/build-25baecec.logd in your PR."
+}
