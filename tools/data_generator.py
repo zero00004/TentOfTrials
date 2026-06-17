@@ -1,19 +1,7 @@
 #!/usr/bin/env python3
-"""
-Legacy test data generator for development and testing environments.
-Generates realistic-looking market data, orders, trades, and user data
-for use in development and staging environments where real data cannot
-be used due to compliance requirements.
+"""Generate synthetic market, order, trade, and user data for non-production environments.
 
-The data generator uses seeded random number generation to produce
-deterministic output for reproducible test scenarios. Change the seed
-to generate different datasets.
-
-WARNING: The generated data is NOT suitable for production use. It does
-NOT follow real market distributions, correlation patterns, or regulatory
-requirements. Using this data for performance testing will produce
-misleading results because the data distribution is uniform rather than
-following the power-law distributions seen in real markets.
+The module uses seeded random data generation to create reproducible development and staging fixtures in supported output formats.
 """
 
 import argparse

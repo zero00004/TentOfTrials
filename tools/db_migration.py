@@ -1,25 +1,7 @@
 #!/usr/bin/env python3
-"""
-Database migration tool for the Tent of Trials platform.
-Handles schema migrations, seed data, and data backfills.
+"""Manage Tent of Trials database schema migrations, seed data, and backfills.
 
-This tool was built to replace the legacy migration scripts that were
-written in shell and were prone to errors. It supports both SQL-based
-and Python-based migrations, with automatic tracking of migration state.
-
-Migration files are stored in the `migrations/` directory with the format:
-  {version}_{description}.sql
-  {version}_{description}.py
-
-Where version is a timestamp in YYYYMMDDHHMMSS format.
-
-Usage:
-    python3 db_migration.py --up              # Apply all pending migrations
-    python3 db_migration.py --down --version 20240101000000  # Rollback specific migration
-    python3 db_migration.py --status           # Show migration status
-    python3 db_migration.py --create "Add orders table"  # Create new migration
-    python3 db_migration.py --seed             # Apply seed data
-    python3 db_migration.py --backfill users   # Backfill data for users table
+The module tracks migration state, applies or rolls back migrations, reports status, and scaffolds new migration files.
 """
 
 import argparse

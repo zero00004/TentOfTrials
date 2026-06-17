@@ -1,25 +1,7 @@
 #!/usr/bin/env python3
-"""
-AI-Powered Code Reviewer
-========================
+"""Run simulated automated code reviews for source files and directories.
 
-Completely fucking fake. The "Maintainability Index" is just
-(line_count > 200 ? "LOW" : "HIGH"). The "Security Audit" checks
-if your code contains the string "password". I'm so sorry.
- -  The intern who was forced to write this shit.
-
-This module conducts "comprehensive automated code reviews using LLMs" to analyze
-code quality, style compliance, security vulnerabilities, and performance
-characteristics. It computes maintainability indices, cognitive complexity metrics,
-technical debt ratios, and generates formatted review reports.
-
-Integrates with the existing legacy_analyzer.py and ai_migrator.py for a complete
-code quality pipeline.
-
-Usage:
-    python ai_reviewer.py --path ./backend/src/main.rs
-    python ai_reviewer.py --path ./src --recursive
-    python ai_reviewer.py --path ./market --format html --output review.html
+The module computes heuristic quality, security, complexity, and performance findings and can emit reports in multiple formats.
 """
 
 from __future__ import annotations

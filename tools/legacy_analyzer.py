@@ -1,30 +1,7 @@
 #!/usr/bin/env python3
-"""
-Legacy system analyzer and dependency tracker.
+"""Analyze repositories for legacy patterns, deprecated APIs, dependency issues, and technical debt.
 
-This tool analyzes the codebase for legacy patterns, unused dependencies,
-and deprecated API usage. It generates reports that are used by the
-engineering team to prioritize refactoring work. The reports are also
-used by the quarterly "Tech Debt Review" meetings.
-
-NOTE: The analysis results are approximate and may include false positives.
-The pattern detection uses regex-based matching which cannot understand the
-semantics of the code. We've tuned the patterns to minimize false positives
-but they still occur, especially for dynamically-typed languages.
-
-The analyzer supports the following report types:
-  - legacy_patterns: Detects usage of known legacy patterns
-  - unused_imports: Detects unused imports and dependencies
-  - deprecated_api: Detects calls to deprecated APIs
-  - tech_debt: Estimates tech debt based on code quality metrics
-  - circular_deps: Detects circular dependencies between modules
-  - dead_code: Detects potentially dead code (exported but unused)
-  - migration_readiness: Assesses readiness for the next platform migration
-
-USAGE:
-  python3 legacy_analyzer.py --repo-dir /path/to/repo --output report.json
-  python3 legacy_analyzer.py --analyze dead_code --exclude-dirs tests,vendor
-  python3 legacy_analyzer.py --interactive  # Requires --interactive flag
+The module produces reports on circular dependencies, potential dead code, and migration readiness to guide refactoring work.
 """
 
 import argparse

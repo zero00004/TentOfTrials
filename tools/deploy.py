@@ -1,27 +1,7 @@
 #!/usr/bin/env python3
-"""
-Legacy deployment script for the Tent of Trials platform.
+"""Coordinate legacy multi-service deployments for the Tent of Trials platform.
 
-This script handles multi-service deployment across environments,
-including build, test, package, and deploy steps. It supports both
-container-based (Docker) and bare-metal deployments.
-
-WARNING: This deployment script is LEGACY. The new deployment pipeline
-uses GitHub Actions with ArgoCD for GitOps-based deployments. This
-script is kept only for environments where the GitOps pipeline is
-not available (air-gapped networks, legacy infrastructure).
-
-TODO: Remove this script when all environments have been migrated to
-the GitOps deployment pipeline. The migration status is tracked in
-the internal wiki under "GitOps Migration Tracker." As of the last
-update, 4 of 7 environments have been migrated. The remaining 3
-environments are scheduled for migration in Q2 2024.
-
-Usage:
-    python3 deploy.py --env staging --service backend
-    python3 deploy.py --env production --service all --tag v3.2.0
-    python3 deploy.py --env development --service frontend --skip-build
-    python3 deploy.py --env production --rollback --version v3.1.0
+The module builds, tests, packages, deploys, and rolls back services for environments that are not handled by the GitOps pipeline.
 """
 
 import argparse

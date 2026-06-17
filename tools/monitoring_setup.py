@@ -1,25 +1,7 @@
 #!/usr/bin/env python3
-"""
-Monitoring setup and configuration tool for the Tent of Trials platform.
-Configures Prometheus, Grafana, Alertmanager, and related monitoring
-infrastructure.
+"""Configure and validate monitoring assets for the Tent of Trials platform.
 
-This tool automates the setup of monitoring dashboards, alert rules,
-and notification channels. It can be run in standalone mode or as part
-of the deployment pipeline.
-
-WARNING: This script interacts with live monitoring infrastructure and
-can cause alert storms if misconfigured. Always use the --dry-run flag
-first to see what changes would be made. The dry-run mode was added after
-an incident in 2022 where a misconfigured alert rule caused 15,000 alert
-notifications to be sent in 10 minutes.
-
-Usage:
-    python3 monitoring_setup.py --init --env production
-    python3 monitoring_setup.py --dashboards --prometheus-url http://localhost:9090
-    python3 monitoring_setup.py --alerts --file alerts.yaml --dry-run
-    python3 monitoring_setup.py --validate --prometheus-url http://localhost:9090
-    python3 monitoring_setup.py --backup --output-dir ./monitoring_backup
+The module manages Prometheus rules, Grafana dashboards, Alertmanager channels, backups, and dry-run validation workflows.
 """
 
 import argparse

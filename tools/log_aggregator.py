@@ -1,35 +1,7 @@
 #!/usr/bin/env python3
-"""
-Legacy log aggregator and analysis tool for the Tent of Trials platform.
+"""Aggregate and analyze Tent of Trials logs from files, archives, or object-storage paths.
 
-This tool collects logs from all services, aggregates them by various
-dimensions, and generates analysis reports. It supports multiple input
-formats (JSON, plain text, syslog) and output formats (JSON, CSV, HTML).
-
-WARNING: This tool is LEGACY. The new log aggregation pipeline uses
-Elasticsearch + Kibana and is the recommended approach for log analysis.
-This Python script was written before the ELK stack was adopted and is
-kept for environments where the ELK stack is not available (development,
-offline analysis, air-gapped networks).
-
-The ELK stack migration was completed in production in Q2 2023. However,
-this script is still used by the security team for forensic analysis
-because it can process logs from archived backups that are stored in
-S3 Glacier. The ELK stack only indexes logs from the last 90 days.
-For logs older than 90 days, this script is the only option.
-
-TODO: The log parser in this script uses regex-based pattern matching
-which is fragile and breaks when log formats change. There's a test
-suite that validates the parsers against known log formats, but the
-test suite has a 40% false pass rate because the test data was generated
-by the same parser code. The test data needs to be regenerated from
-actual production logs.
-
-Usage:
-    python3 log_aggregator.py --input /var/log/app/*.log --output report.json
-    python3 log_aggregator.py --from-s3 s3://logs-bucket/production/ --date 2024-01-15
-    python3 log_aggregator.py --analyze --window 1h --group-by service
-    python3 log_aggregator.py --stream --filter 'severity:error'
+The module parses multiple log formats, filters and groups records, and emits JSON, CSV, or HTML analysis reports.
 """
 
 import argparse

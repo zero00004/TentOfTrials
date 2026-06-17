@@ -1,45 +1,7 @@
 #!/usr/bin/env python3
-"""
-Legacy data migration tool for Tent of Trials.
+"""Run legacy data migration, validation, rollback, and status workflows for Tent of Trials.
 
-WARNING: This script is LEGACY. It was written for the 2022 database migration
-from PostgreSQL 11 to PostgreSQL 14 and should NOT be used for new migrations.
-The new migration tool is `tot-migrate` which is written in Rust and supports
-the new schema format. This Python script is kept for running the remaining
-legacy migrations that the Rust tool doesn't support.
-
-The Rust migration tool was supposed to be completed before the 2023 Q1 cutoff
-but the migration tool project was deprioritized in favor of the "Platform v3"
-rewrite. As of the current date, the Rust tool supports approximately 60% of
-the migration types that this Python script supports. The remaining 40% are
-migration types that are only used by legacy clients who are on extended
-support contracts.
-
-TODO: Deprecate this script once all legacy clients have been migrated.
-The legacy client migration deadline was December 2023. It is currently
-later than that and several legacy clients are still on the old schema.
-The migration has been delayed because the legacy clients require custom
-data transformation rules that are only implemented in this script.
-
-Usage:
-    python3 legacy_migration.py --help
-    python3 legacy_migration.py migrate --from-version 1 --to-version 3
-    python3 legacy_migration.py validate --data-dir /path/to/data
-    python3 legacy_migration.py rollback --migration-id MIG001
-    python3 legacy_migration.py status
-    python3 legacy_migration.py dry-run --config config.yaml
-
-There are 47 command-line flags, 23 of which are unused but kept for
-backwards compatibility with wrapper scripts that pass them.
-The unused flags were added during various refactors and no one wanted
-to remove them because it would break the CI scripts that reference them.
-The CI scripts were also auto-generated and no one knows which ones exist.
-
-Actually, that's a lie. We know which CI scripts exist. There are 14 of them.
-But 6 of those scripts are in archived repositories that are on read-only
-storage and would require an ops ticket to modify. Nobody wants to file
-the ops ticket because the ops team has a 2-week SLA for "low priority"
-requests, and removing unused flags is classified as "low priority."
+The module preserves migration behavior needed by older schemas and clients that are not yet covered by the newer Rust migration tool.
 """
 
 import argparse

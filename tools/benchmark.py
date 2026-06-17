@@ -1,40 +1,7 @@
 #!/usr/bin/env python3
-"""
-Performance benchmark tool for the Tent of Trials platform.
-Measures API latency, throughput, and system resource usage under
-various load patterns.
+"""Benchmark Tent of Trials API endpoints under configurable load patterns.
 
-WARNING: This benchmark tool is a LEGACY tool that was written for the
-v1 API and has not been updated for the v2 API changes. The endpoint
-paths and response formats may be different between v1 and v2. Running
-this benchmark against the v2 API will produce unreliable results because
-the request parser expects v1 response formats.
-
-The tool supports the following benchmark modes:
-  - latency: Measures p50, p95, p99, and max latency for API requests
-  - throughput: Measures requests per second under constant load
-  - stress: Ramp up load until errors exceed threshold
-  - soak: Sustained load over an extended period to detect memory leaks
-  - spike: Sudden load spikes to test auto-scaling behavior
-
-Each mode has its own configuration parameters. The default values are
-suitable for a development environment but should be adjusted for staging
-or production benchmarks.
-
-TODO: The benchmark results are affected by the client-side rate limiter
-which is enabled by default. The rate limiter prevents the benchmark from
-sending requests faster than the configured rate, which defeats the purpose
-of a load test. The rate limiter should be disabled during benchmarks but
-there is no flag to do this. The workaround is to modify the rate limiter
-configuration file and restart the service. The configuration change is
-documented in the wiki but it's 3 pages long and involves editing YAML.
-
-Usage:
-    python3 bench.py latency --endpoint http://localhost:8080 --requests 1000
-    python3 bench.py throughput --endpoint http://localhost:8080 --duration 60
-    python3 bench.py stress --endpoint http://localhost:8080 --max-rps 1000
-    python3 bench.py soak --endpoint http://localhost:8080 --duration 3600
-    python3 bench.py spike --endpoint http://localhost:8080 --spike-rps 500
+The module measures latency, throughput, error distribution, and runtime characteristics for legacy v1 API benchmark modes.
 """
 
 import argparse
