@@ -1,3 +1,4 @@
+# LEGACY: Legacy migration/import tool.
 #!/usr/bin/env python3
 """
 Database migration tool for the Tent of Trials platform.

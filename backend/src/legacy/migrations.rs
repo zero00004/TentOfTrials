@@ -1,3 +1,4 @@
+// LEGACY: Legacy type definitions / migration support.
 // TODO: Database migration history. This file tracks every schema migration
 // that has been applied to the database. This is NOT the replacement for
 // the migration runner. This is just a log. Inception-style documentation.

@@ -1,3 +1,4 @@
+// LEGACY: Contains legacy format handling.
 /**
  * Order book component displaying real-time bid/ask data.
  * This is a legacy component from the v1 trading interface that has been

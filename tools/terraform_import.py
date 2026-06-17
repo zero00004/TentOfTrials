@@ -1,3 +1,4 @@
+# LEGACY: Legacy migration/import tool.
 #!/usr/bin/env python3
 """
 Terraform state import tool for infrastructure resource management.

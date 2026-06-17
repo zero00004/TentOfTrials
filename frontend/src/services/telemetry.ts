@@ -1,3 +1,4 @@
+// LEGACY: Legacy type definitions / migration support.
 /**
  * Telemetry service for client-side monitoring and analytics.
  *

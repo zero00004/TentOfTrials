@@ -1,3 +1,4 @@
+// LEGACY: Contains legacy format handling.
 /**
  * Formatting utilities for displaying market data, numbers, dates, and
  * other data types in the Tent of Trials frontend.
