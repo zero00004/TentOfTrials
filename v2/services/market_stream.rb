@@ -49,11 +49,13 @@
 
 require 'json'
 require 'digest'
+require 'time'
 require 'eventmachine'
 require 'em-websocket-client'
 require 'redis'
 require 'sinatra/base'
 require 'logger'
+require_relative 'market_stream_support'
 
 # ===─ Fucking Constants =================================================================================─
 
@@ -65,14 +67,15 @@ V2_AUTHOR  = 'The v2 Fucking Team'
 # In v2, we put ALL of them in one place so it's EASIER to see how fucked we are.
 module Constants
   # WebSocket
-  WS_RECONNECT_BASE    = 1      # seconds. Starts at 1 because attempt=1.
-  WS_RECONNECT_MAX     = 120    # seconds. Two whole fucking minutes.
+  WS_HOST              = ENV.fetch('EXCHANGE_HOST', 'localhost')
+  WS_PORT              = ENV.fetch('EXCHANGE_PORT', '9000').to_i
+  WS_RECONNECT_MAX     = 300    # seconds. Five minutes.
   WS_PING_INTERVAL     = 30     # seconds. Keepalive.
   WS_PONG_TIMEOUT      = 10     # seconds. If they don't pong back, fuck 'em.
   WS_MAX_RECONNECTS    = nil     # nil = infinite. Because fuck it.
 
   # Redis
-  REDIS_CHANNEL_PREFIX = 'v2:market:'
+  REDIS_CHANNELS       = MarketStreamSupport::REDIS_CHANNELS.values
   REDIS_POOL_SIZE      = 10     # more than enough for our shitty throughput
   REDIS_TIMEOUT        = 5      # seconds
 
@@ -216,12 +219,8 @@ class MarketStreamClient < EM::Connection
     # v2 reconnection: exponential backoff with max. We learned. We grew.
     return if Constants::WS_MAX_RECONNECTS && @reconnect_attempt >= Constants::WS_MAX_RECONNECTS
 
-    delay = [
-      Constants::WS_RECONNECT_BASE * (2 ** @reconnect_attempt),
-      Constants::WS_RECONNECT_MAX
-    ].min
-
     @reconnect_attempt += 1
+    delay = MarketStreamSupport.reconnect_delay(@reconnect_attempt)
 
     $logger.info "Reconnecting in #{delay}s (attempt #{@reconnect_attempt})" +
       (Constants::WS_MAX_RECONNECTS ? "/#{Constants::WS_MAX_RECONNECTS}" : "")
@@ -260,6 +259,17 @@ class MarketStreamAPI < Sinatra::Base
       uptime: (Time.now.utc - $start_time).to_i,
       connected: $client&.connected || false,
       subscriptions: $client&.instrument_ids&.length || 0,
+    }.to_json
+  end
+
+  # Redis-specific health check. Pings on demand so the endpoint reflects a
+  # Redis restart quickly while reporting the most recent successful ping time.
+  get '/health/redis' do
+    content_type :json
+    $redis_pubsub&.ping
+    {
+      connected: $redis_pubsub&.connected? || false,
+      last_ping_ms: $redis_pubsub&.last_ping_ms || 0,
     }.to_json
   end
 
@@ -307,14 +317,21 @@ def start_service
   EM.run do
     $logger.info "v2 EventMachine reactor started"
 
+    # Redis pub/sub runs in its own thread and reconnects independently from
+    # the exchange WebSocket. This lets the service survive redis-server
+    # restarts without crashing or tearing down the market data connection.
+    $redis_pubsub = RedisPubSubBridge.new(timeout: Constants::REDIS_TIMEOUT, logger: $logger)
+    $redis_pubsub.start
+
     # Connect to exchange
     $client = EM.connect(
-      ENV.fetch('EXCHANGE_HOST', 'localhost'),
-      ENV.fetch('EXCHANGE_PORT', '9000').to_i,
+      Constants::WS_HOST,
+      Constants::WS_PORT,
       MarketStreamClient,
       ENV.fetch('INSTRUMENTS', 'BTC/USD,ETH/USD').split(','),
       ->(data) {
         $message_count += data.is_a?(Array) ? data.length : 1
+        $redis_pubsub&.publish_market_data(data)
       },
       ->(error) {
         $logger.error "Market stream error: #{error.message}"
@@ -334,6 +351,7 @@ def start_service
   end
 rescue Interrupt
   $logger.info "Service stopped by interrupt. Cleaning up..."
+  $redis_pubsub&.stop
 rescue StandardError => e
   $logger.error "Fatal error starting service: #{e.message}"
   $logger.error e.backtrace.first(10).join("\n")
