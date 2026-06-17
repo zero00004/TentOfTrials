@@ -37,7 +37,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum, auto
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Protocol, Self, TypedDict, cast
 
 # Configure logging
 logging.basicConfig(
@@ -133,6 +133,43 @@ class ReviewCategory(Enum):
     DUPLICATION = "duplication"
 
 
+class SecurityPattern(TypedDict):
+    """Security vulnerability pattern definition."""
+
+    id: str
+    name: str
+    severity: ReviewSeverity
+    pattern: str
+    message: str
+    effort: int
+
+
+class MigrationPatternProtocol(Protocol):
+    """Structural type for findings produced by ai_migrator.PatternDetector."""
+
+    name: str
+    line_number: int
+    severity: object
+    description: str
+    replacement_pattern: str | None
+    snippet: str | None
+
+
+class PatternDetectorProtocol(Protocol):
+    """Structural type for optional ai_migrator pattern detector integration."""
+
+    def analyze_file(self: Self, path: Path, source: str) -> list[MigrationPatternProtocol]:
+        ...
+
+
+class ReviewerArgs(Protocol):
+    """Parsed CLI arguments used by the reviewer."""
+
+    path: str
+    recursive: bool
+    output: str | None
+
+
 @dataclass
 class ReviewFinding:
     """A single finding from the code review."""
@@ -144,10 +181,10 @@ class ReviewFinding:
     file_path: str
     line_number: int
     column: int = 0
-    suggestion: Optional[str] = None
-    code_snippet: Optional[str] = None
+    suggestion: str | None = None
+    code_snippet: str | None = None
     effort_minutes: int = 0
-    rules: List[str] = field(default_factory=list)
+    rules: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -185,7 +222,7 @@ class FileReviewResult:
     file_path: str
     language: str
     line_count: int
-    findings: List[ReviewFinding] = field(default_factory=list)
+    findings: list[ReviewFinding] = field(default_factory=list)
     complexity: ComplexityMetrics = field(default_factory=ComplexityMetrics)
     quality: QualityScore = field(default_factory=QualityScore)
     summary: str = ""
@@ -205,7 +242,7 @@ class ProjectReviewReport:
     warnings: int
     info_findings: int
     suggestions: int
-    file_results: List[FileReviewResult] = field(default_factory=list)
+    file_results: list[FileReviewResult] = field(default_factory=list)
     summary: str = ""
 
 
@@ -217,13 +254,13 @@ class ProjectReviewReport:
 class CodeQualityAnalyzer:
     """Analyzes code quality metrics including maintainability, complexity, and technical debt."""
 
-    def analyze(self, source: str, language: str) -> Tuple[ComplexityMetrics, QualityScore]:
+    def analyze(self: Self, source: str, language: str) -> tuple[ComplexityMetrics, QualityScore]:
         """Perform comprehensive quality analysis on source code."""
         complexity = self._compute_complexity(source, language)
         quality = self._compute_quality(source, language, complexity)
         return complexity, quality
 
-    def _compute_complexity(self, source: str, language: str) -> ComplexityMetrics:
+    def _compute_complexity(self: Self, source: str, language: str) -> ComplexityMetrics:
         """Compute cognitive and cyclomatic complexity metrics."""
         lines = source.splitlines()
         metrics = ComplexityMetrics(lines_of_code=len(lines))
@@ -286,7 +323,7 @@ class CodeQualityAnalyzer:
         return metrics
 
     def _compute_quality(
-        self, source: str, language: str, complexity: ComplexityMetrics
+        self: Self, source: str, language: str, complexity: ComplexityMetrics
     ) -> QualityScore:
         """Compute quality scores for the source code."""
         lines = source.splitlines()
@@ -333,7 +370,7 @@ class CodeQualityAnalyzer:
             overall_rating=rating,
         )
 
-    def _count_style_issues(self, source: str, language: str) -> int:
+    def _count_style_issues(self: Self, source: str, language: str) -> int:
         """Count style issues in the source code."""
         issues = 0
         for line in source.splitlines():
@@ -357,10 +394,10 @@ class CodeQualityAnalyzer:
 class SecurityAuditor:
     """Detects security vulnerabilities using AI pattern matching."""
 
-    def __init__(self):
-        self.patterns: List[Dict[str, Any]] = self._initialize_patterns()
+    def __init__(self: Self) -> None:
+        self.patterns: list[SecurityPattern] = self._initialize_patterns()
 
-    def _initialize_patterns(self) -> List[Dict[str, Any]]:
+    def _initialize_patterns(self: Self) -> list[SecurityPattern]:
         """Initialize security vulnerability patterns."""
         return [
             {
@@ -398,7 +435,7 @@ class SecurityAuditor:
             {
                 "id": "SEC-PATH-TRAVERSAL",
                 "name": "Path Traversal",
-                "severity": ReviewSeverity.HIGH,
+                "severity": ReviewSeverity.ERROR,
                 "pattern": r"(open|read|write|unlink|rmdir|Path::new)\s*\(\s*['\"](\.\./|/etc/|/var/)",
                 "message": "Possible path traversal vulnerability. Validate file paths.",
                 "effort": 20,
@@ -406,7 +443,7 @@ class SecurityAuditor:
             {
                 "id": "SEC-INSECURE-RANDOM",
                 "name": "Insecure Random Number Generator",
-                "severity": ReviewSeverity.HIGH,
+                "severity": ReviewSeverity.ERROR,
                 "pattern": r"(random\.randint|random\.choice|srand|rand\(\)|math\.random)",
                 "message": "Use cryptographically secure random generation for security-sensitive contexts.",
                 "effort": 10,
@@ -414,7 +451,7 @@ class SecurityAuditor:
             {
                 "id": "SEC-INSECURE-COOKIE",
                 "name": "Insecure Cookie Configuration",
-                "severity": ReviewSeverity.HIGH,
+                "severity": ReviewSeverity.ERROR,
                 "pattern": r"cookie\s*[\[=]\s*.*\b(httpOnly|secure|sameSite)\b\s*[=:]\s*(false|False|None)",
                 "message": "Insecure cookie configuration. Set HttpOnly, Secure, and SameSite attributes.",
                 "effort": 10,
@@ -422,16 +459,16 @@ class SecurityAuditor:
             {
                 "id": "SEC-XXE",
                 "name": "XML External Entity (XXE)",
-                "severity": ReviewSeverity.HIGH,
+                "severity": ReviewSeverity.ERROR,
                 "pattern": r"(xml\.etree|xml_parser|parse\(|SAXParser|DocumentBuilder)",
                 "message": "Possible XXE vulnerability. Disable external entity parsing.",
                 "effort": 20,
             },
         ]
 
-    def audit(self, source: str, file_path: str) -> List[ReviewFinding]:
+    def audit(self: Self, source: str, file_path: str) -> list[ReviewFinding]:
         """Audit source code for security vulnerabilities."""
-        findings: List[ReviewFinding] = []
+        findings: list[ReviewFinding] = []
         lines = source.splitlines()
 
         for pattern in self.patterns:
@@ -467,9 +504,9 @@ class SecurityAuditor:
 class PerformanceProfiler:
     """Profiles code for performance issues and hot paths."""
 
-    def profile(self, source: str, file_path: str) -> List[ReviewFinding]:
+    def profile(self: Self, source: str, file_path: str) -> list[ReviewFinding]:
         """Profile source code for performance anti-patterns."""
-        findings: List[ReviewFinding] = []
+        findings: list[ReviewFinding] = []
         lines = source.splitlines()
 
         # N+1 query pattern
@@ -544,19 +581,19 @@ class AiCodeReviewer:
     Generates detailed review reports with severity levels and actionable suggestions.
     """
 
-    def __init__(self):
+    def __init__(self: Self) -> None:
         self.quality_analyzer = CodeQualityAnalyzer()
         self.security_auditor = SecurityAuditor()
         self.performance_profiler = PerformanceProfiler()
         self.logger = logging.getLogger("AiCodeReviewer")
 
         if HAS_MIGRATOR:
-            self.pattern_detector = PatternDetector()
+            self.pattern_detector: PatternDetectorProtocol | None = PatternDetector()
             self.logger.info("Integrated with ai_migrator PatternDetector")
         else:
             self.pattern_detector = None
 
-    def review_file(self, path: Path) -> FileReviewResult:
+    def review_file(self: Self, path: Path) -> FileReviewResult:
         """Review a single file and return the result."""
         if not path.exists():
             raise FileNotFoundError(f"File not found: {path}")
@@ -652,7 +689,7 @@ class AiCodeReviewer:
             try:
                 patterns = self.pattern_detector.analyze_file(path, source)
                 for pat in patterns:
-                    severity_map = {
+                    severity_map: dict[object, ReviewSeverity] = {
                         PatternSeverity.CRITICAL: ReviewSeverity.CRITICAL,
                         PatternSeverity.HIGH: ReviewSeverity.ERROR,
                         PatternSeverity.MEDIUM: ReviewSeverity.WARNING,
@@ -701,7 +738,7 @@ class AiCodeReviewer:
         self.logger.info(result.summary)
         return result
 
-    def review_directory(self, path: Path, recursive: bool = True) -> ProjectReviewReport:
+    def review_directory(self: Self, path: Path, recursive: bool = True) -> ProjectReviewReport:
         """Review all supported files in a directory."""
         report = ProjectReviewReport(
             timestamp=datetime.now().isoformat(),
@@ -769,9 +806,9 @@ class AiCodeReviewer:
 
         return report
 
-    def generate_report_json(self, report: ProjectReviewReport, output_path: Optional[Path] = None) -> str:
+    def generate_report_json(self: Self, report: ProjectReviewReport, output_path: Path | None = None) -> str:
         """Generate a JSON report."""
-        data = asdict(report)
+        data: object = asdict(report)
         data = json.loads(json.dumps(data, default=str))
         json_str = json.dumps(data, indent=2, default=str)
 
@@ -800,7 +837,7 @@ def create_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     parser = create_parser()
-    args = parser.parse_args()
+    args = cast(ReviewerArgs, parser.parse_args())
 
     reviewer = AiCodeReviewer()
     path = Path(args.path)
