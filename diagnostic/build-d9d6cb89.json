@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-17T23:54:38Z",
-  "commit": "c32b2ce2",
-  "diagnostic_logd": "diagnostic/build-c32b2ce2.logd",
+  "generated_at": "2026-06-17T23:58:33Z",
+  "commit": "d9d6cb89",
+  "diagnostic_logd": "diagnostic/build-d9d6cb89.logd",
   "diagnostic_logd_error": null,
   "chunked": false,
   "chunk_size_bytes": null,
-  "password": "stub-no-encryption-needed",
-  "decrypt_command": null,
+  "password": "stub-password-for-ci-validation",
+  "decrypt_command": "encryptly unpack diagnostic/build-d9d6cb89.logd <outdir> --password stub-password-for-ci-validation",
   "total_modules": 10,
   "passed": 8,
   "failed": 2,
@@ -82,5 +82,5 @@
       "output": ""
     }
   ],
-  "pr_note": "Include this JSON diagnostic report and diagnostic/build-c32b2ce2.logd in your PR."
+  "pr_note": "Include this JSON diagnostic report and diagnostic/build-d9d6cb89.logd in your PR."
 }
