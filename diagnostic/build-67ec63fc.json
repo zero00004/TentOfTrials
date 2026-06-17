@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-17T23:54:38Z",
-  "commit": "0519fdc7",
-  "diagnostic_logd": "diagnostic/build-0519fdc7.logd",
+  "generated_at": "2026-06-17T23:58:33Z",
+  "commit": "67ec63fc",
+  "diagnostic_logd": "diagnostic/build-67ec63fc.logd",
   "diagnostic_logd_error": null,
   "chunked": false,
   "chunk_size_bytes": null,
-  "password": "stub-no-encryption-needed",
-  "decrypt_command": null,
+  "password": "stub-password-for-ci-validation",
+  "decrypt_command": "encryptly unpack diagnostic/build-67ec63fc.logd <outdir> --password stub-password-for-ci-validation",
   "total_modules": 10,
   "passed": 8,
   "failed": 2,
@@ -82,5 +82,5 @@
       "output": ""
     }
   ],
-  "pr_note": "Include this JSON diagnostic report and diagnostic/build-0519fdc7.logd in your PR."
+  "pr_note": "Include this JSON diagnostic report and diagnostic/build-67ec63fc.logd in your PR."
 }
