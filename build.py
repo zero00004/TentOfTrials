@@ -12,7 +12,7 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 ROOT = Path(__file__).resolve().parent
 DIAGNOSTIC_DIR = ROOT / "diagnostic"
@@ -163,6 +163,71 @@ MODULES = [
         build_dir=None,
     ),
 ]
+
+
+def valid_module_names(modules: Sequence[Module] = MODULES) -> list[str]:
+    """Return the canonical module names accepted by the build script."""
+    return [module.name for module in modules]
+
+
+def parse_module_selection(selection: str | Sequence[str] | None) -> list[str]:
+    """Parse a --module value into module names.
+
+    argparse passes a sequence when users provide values with spaces, for
+    example `--module backend, frontend`. Joining with spaces before splitting
+    on commas preserves support for the original quoted comma-separated form.
+    """
+    if selection is None:
+        return ["all"]
+    if isinstance(selection, str):
+        raw = selection
+    else:
+        raw = " ".join(selection)
+    names = [name.strip() for name in raw.split(",")]
+    return [name for name in names if name]
+
+
+def validate_module_selection(
+    requested: Sequence[str], modules: Sequence[Module] = MODULES
+) -> tuple[list[Module], list[str]]:
+    """Validate requested module names and return selected modules plus errors."""
+    if list(requested) == ["all"]:
+        return list(modules), []
+
+    module_by_name = {module.name: module for module in modules}
+    invalid = [name for name in requested if name not in module_by_name]
+    if invalid:
+        return [], invalid
+
+    selected: list[Module] = []
+    seen: set[str] = set()
+    for name in requested:
+        if name in seen:
+            continue
+        selected.append(module_by_name[name])
+        seen.add(name)
+    return selected, []
+
+
+def select_modules(
+    selection: str | Sequence[str] | None, modules: Sequence[Module] = MODULES
+) -> tuple[list[Module], list[str], list[str]]:
+    """Parse and validate module selection in one unit-testable helper."""
+    requested = parse_module_selection(selection)
+    selected, invalid = validate_module_selection(requested, modules)
+    return selected, invalid, requested
+
+
+def format_module_catalog(modules: Sequence[Module] = MODULES) -> str:
+    """Return the detailed module catalog used by --list-modules."""
+    lines: list[str] = []
+    for module in modules:
+        lines.append(
+            f"{module.name}\t{module.language}\t"
+            f"{module.dir.relative_to(ROOT)}\t{' '.join(module.build_cmd)}"
+        )
+    return "\n".join(lines)
+
 
 ENCRYPTLY_DIR = ROOT / "tools" / "encryptly"
 ENCRYPTLY_BINARIES = {
@@ -795,8 +860,9 @@ Diagnostic bundle:
     )
     parser.add_argument(
         "-m", "--module",
-        help="Module(s) to build (comma-separated, or 'all')",
-        default="all",
+        help="Module(s) to build (comma-separated, optionally with spaces, or 'all')",
+        nargs="+",
+        default=["all"],
     )
     parser.add_argument(
         "--clean", action="store_true",
@@ -811,7 +877,7 @@ Diagnostic bundle:
         help="Show detailed build output",
     )
     parser.add_argument(
-        "--list", action="store_true",
+        "--list", "--list-modules", action="store_true",
         help="List available modules and exit",
     )
 
@@ -823,11 +889,18 @@ Diagnostic bundle:
 
     if args.list:
         print(f"  {color('Available modules:', Colors.BOLD)}")
-        for m in MODULES:
-            print(f"    {color(m.name, Colors.CYAN)} ({m.language})")
-            print(f"      dir: {m.dir.relative_to(ROOT)}")
-            print(f"      build: {' '.join(m.build_cmd)}")
+        print("    name\tlanguage\tdirectory\tbuild command")
+        for line in format_module_catalog().splitlines():
+            name, language, directory, command = line.split("\t", 3)
+            print(f"    {color(name, Colors.CYAN)}\t{language}\t{directory}\t{command}")
         return 0
+
+    selected, invalid_modules, requested_modules = select_modules(args.module)
+    if invalid_modules:
+        print(f"  {color('✗ Unknown module selection:', Colors.RED)} {', '.join(invalid_modules)}")
+        print(f"    Requested: {', '.join(requested_modules) or '(none)'}")
+        print(f"    Valid modules: {', '.join(valid_module_names())}")
+        return 1
 
     print(f"  {color('Checking prerequisites...', Colors.GRAY)}")
     missing = check_prerequisites()
@@ -840,16 +913,6 @@ Diagnostic bundle:
         print(f"  {color(msg, Colors.GRAY)}")
     else:
         print(f"  {color('✓ All prerequisites found', Colors.GREEN)}")
-    if args.module == "all":
-        selected = MODULES
-    else:
-        names = [n.strip() for n in args.module.split(",")]
-        selected = [m for m in MODULES if m.name in names]
-        not_found = set(names) - {m.name for m in MODULES}
-        if not_found:
-            print(f"  {color('✗ Unknown modules:', Colors.RED)} {', '.join(not_found)}")
-            print(f"    Available: {', '.join(m.name for m in MODULES)}")
-            return 1
 
     if not selected:
         print(f"  No modules selected.")
