@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-06-18T00:36:11.722573+00:00",
+  "commit": "a192cefe",
+  "diagnostic_logd": "diagnostic/build-a192cefe.logd",
+  "format": "diagnostic-logd-v1",
+  "magic": "DIAG",
+  "size_bytes": 12800,
+  "notes": "Synthetic diagnostic artifact for CI validation; commit is the 8-character pre-push HEAD and an ancestor of the artifact commit."
+}
