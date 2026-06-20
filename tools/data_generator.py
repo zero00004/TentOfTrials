@@ -342,8 +342,6 @@ def main():
             all_candles[key] = candles
 
     output_format = args.format
-    if output_format == "both":
-        output_format = "json"  # Default for combined
 
     # Export
     if output_format in ("json", "both"):
