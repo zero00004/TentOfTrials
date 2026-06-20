@@ -360,7 +360,7 @@ class LogAggregator:
         logger.info(f"Report exported to {output_path}")
 
     def generate_html_report(self, output_path: str):
-        summary = self.get_summary()
+        summary = self.get_summary() or {}
         html = f"""<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><title>Log Aggregation Report</title>
@@ -444,7 +444,7 @@ def main():
         if len(results) > 20:
             print(f"  ... and {len(results) - 20} more")
 
-    summary = aggregator.get_summary()
+    summary = aggregator.get_summary() or {}
     print(f"\nSummary:")
     print(f"  Total entries: {summary['total_entries']:,}")
     print(f"  Time range: {summary.get('time_range', {}).get('start', 'N/A')} to {summary.get('time_range', {}).get('end', 'N/A')}")
