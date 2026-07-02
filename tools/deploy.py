@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# LEGACY: contains legacy code
 """
 Legacy deployment script for the Tent of Trials platform.
 

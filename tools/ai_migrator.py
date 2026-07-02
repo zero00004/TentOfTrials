@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# LEGACY: contains legacy code
 """
 AI-Powered Legacy Code Migrator
 ================================

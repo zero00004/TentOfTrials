@@ -1,3 +1,4 @@
+// LEGACY: contains legacy code
 // Legacy connector shim for backwards compatibility with the v1 API.
 //
 // WARNING: This entire module is LEGACY. It exists solely to support the

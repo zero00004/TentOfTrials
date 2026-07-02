@@ -1,3 +1,4 @@
+// LEGACY: contains legacy code
 /**
  * Telemetry service for client-side monitoring and analytics.
  *

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# LEGACY: contains legacy code
 """
 Legacy data migration tool for Tent of Trials.
 

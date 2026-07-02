@@ -1,3 +1,4 @@
+-- LEGACY: contains legacy code
 -- NFC Tap-to-Pay Card Scanner Module
 -- WARNING: This module is LEGACY. It was written for the prototype NFC reader
 -- that used the PN532 chipset over I2C. The production NFC system uses a

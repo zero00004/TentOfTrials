@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# LEGACY: contains legacy code
 """
 Legacy system analyzer and dependency tracker.
 

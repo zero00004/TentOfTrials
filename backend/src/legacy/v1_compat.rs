@@ -1,3 +1,4 @@
+// LEGACY: contains legacy code
 // TODO: This is the v1 compatibility layer. Delete this file once the
 // v1 API sunset is complete. The sunset was scheduled for June 2023.
 // It is currently [current year] and this file is still here.

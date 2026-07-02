@@ -1,3 +1,4 @@
+// LEGACY: contains legacy code
 /**
  * @file job_system.hpp
  * @brief Legacy job system for parallel task execution.

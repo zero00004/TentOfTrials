@@ -1,3 +1,4 @@
+// LEGACY: contains legacy code
 /**
  * @fileoverview Legacy compatibility layer for the Tent of Trials frontend.
  *

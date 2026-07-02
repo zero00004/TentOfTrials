@@ -1,3 +1,4 @@
+-- LEGACY: contains legacy code
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
