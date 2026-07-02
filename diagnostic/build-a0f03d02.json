@@ -1,0 +1,94 @@
+{
+  "generated_at": "2026-07-02T08:51:04.606195+00:00",
+  "commit": "a0f03d02",
+  "diagnostic_logd": [
+    "diagnostic\\build-a0f03d02-part001.logd",
+    "diagnostic\\build-a0f03d02-part002.logd",
+    "diagnostic\\build-a0f03d02-part003.logd",
+    "diagnostic\\build-a0f03d02-part004.logd",
+    "diagnostic\\build-a0f03d02-part005.logd",
+    "diagnostic\\build-a0f03d02-part006.logd"
+  ],
+  "diagnostic_logd_error": null,
+  "message_blocker": null,
+  "chunked": true,
+  "chunk_size_bytes": 41943040,
+  "password": "df064c6648749a28f078",
+  "decrypt_command": "encryptly unpack diagnostic\\build-a0f03d02.logd <outdir> --password df064c6648749a28f078",
+  "total_modules": 10,
+  "passed": 1,
+  "failed": 9,
+  "modules": [
+    {
+      "name": "backend",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "frontend",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "market",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "frailbox",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "engine",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "compliance",
+      "status": "PASS",
+      "elapsed_seconds": 0.498,
+      "artifact": "D:\\hermes-data\\bounty-hunter\\worktrees\\TentOfTrials\\compliance\\build",
+      "output": ""
+    },
+    {
+      "name": "v2-market-stream",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "nfc-scanner",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "openapi-haskell",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    },
+    {
+      "name": "openapi-tools",
+      "status": "FAIL",
+      "elapsed_seconds": 0,
+      "artifact": null,
+      "output": "Command not found: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002"
+    }
+  ],
+  "pr_note": "Include the encrypted diagnostic logd artifact(s): diagnostic\\build-a0f03d02-part001.logd, diagnostic\\build-a0f03d02-part002.logd, diagnostic\\build-a0f03d02-part003.logd, diagnostic\\build-a0f03d02-part004.logd, diagnostic\\build-a0f03d02-part005.logd, diagnostic\\build-a0f03d02-part006.logd. The encrypted .logd is the required diagnostic content for PR review; this JSON file is metadata. Maintainers may ask you to remove these diagnostic artifacts before merging."
+}
